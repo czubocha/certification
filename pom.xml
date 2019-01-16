@@ -60,8 +60,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <repository>${env.docker_registry_host}/${env.TAG}</repository>
-                    <tag>${project.version}</tag>
+                    <repository>${env.docker_registry_host}/${project.artifactId}</repository>
+                    <tag>${env.TAG}</tag>
                     <buildArgs>
                         <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
                     </buildArgs>
