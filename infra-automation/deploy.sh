@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-export accound_id=071572870590
+export account_id=071572870590
 export infra_bucket_name=certification-infra-auto
 export region=eu-central-1
 export mysshkey=certification

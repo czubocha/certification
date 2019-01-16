@@ -211,25 +211,25 @@ Resources:
         BuildSpec: |
           version: 0.2
           phases:
-          install:
-          commands:
-          - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=vfs&
-          - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
-          pre_build:
-          commands:
-          - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email) | sed 's,https://,,g'
-          - TAG="$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
-          - export docker_registry_host=$(echo $REPOSITORY_URI | sed 's=/.*==g')
-          build:
-          commands:
-          - echo Build started on `date`
-          - mvn package docker:build -DpushImage -DdockerImageTags=${TAG} -Dmaven.test.skip=true
-          post_build:
-          commands:
-          - printenv
-          - echo Build completed on `date`
-          - echo $(docker images)
-          - printf '{"tag":"%s"}' $TAG > build.json
+            install:
+              commands:
+              - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=vfs&
+              - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+            pre_build:
+              commands:
+              - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email) | sed 's,https://,,g'
+              - TAG="$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
+              - export docker_registry_host=$(echo $REPOSITORY_URI | sed 's=/.*==g')
+            build:
+              commands:
+              - echo Build started on `date`
+              - mvn package docker:build -DpushImage -DdockerImageTags=${TAG} -Dmaven.test.skip=true
+            post_build:
+              commands:
+              - printenv
+              - echo Build completed on `date`
+              - echo $(docker images)
+              - printf '{"tag":"%s"}' $TAG > build.json
           #                - printf '{"Parameters":{"SsmKMSKeyArn":"%s","DBPasswordSSMKey":"%s","DBUsername":"%s","JDBCConnectionString":"%s"}}' $SsmKMSKeyArn ${DBPasswordSSMKey} ${DBUsername} ${JDBCConnectionString} > petclinic-service-configuration.json
           artifacts:
             files:
