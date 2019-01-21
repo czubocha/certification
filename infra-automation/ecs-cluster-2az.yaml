@@ -398,11 +398,11 @@ Resources:
   ElbSecurityGroupHTTPinbound:
     Properties:
       CidrIp: 0.0.0.0/0
-      FromPort: '80'
+      FromPort: '8080'
       GroupId:
         Ref: ElbSecurityGroup
       IpProtocol: tcp
-      ToPort: '80'
+      ToPort: '8080'
     Type: AWS::EC2::SecurityGroupIngress
   InternetGateway:
     Condition: CreateVpcResources

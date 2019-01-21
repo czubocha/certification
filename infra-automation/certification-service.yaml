@@ -61,12 +61,8 @@ Resources:
                 Effect: Allow
                 Action:
                   - ssm:GetParameters
-              - Resource: !Ref SsmKMSKeyArn
-                Effect: Allow
-                Action:
-                  - kms:Decrypt
 
-  ####spring-petclinic
+  ####spring-certification
   Service:
     Type: AWS::ECS::Service
     Properties:
@@ -112,12 +108,12 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       VpcId: !Ref VpcId
-      Port: 80
+      Port: 8080
       Protocol: HTTP
       Matcher:
         HttpCode: 200-299
       HealthCheckIntervalSeconds: 10
-      HealthCheckPath: /
+      HealthCheckPath: /greeting
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2

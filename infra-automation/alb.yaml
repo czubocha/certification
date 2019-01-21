@@ -16,7 +16,7 @@ Outputs:
     Description: Your ALB DNS URL
     Value: !Join ['', ["http://",!GetAtt [LoadBalancer, DNSName]]]
   ALBListener:
-    Description: ALB Port 80 http Listener
+    Description: ALB Port 8080 http Listener
     Value: !Ref LoadBalancerListener
 
 Resources:
@@ -35,7 +35,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       LoadBalancerArn: !Ref LoadBalancer
-      Port: 80
+      Port: 8080
       Protocol: HTTP
       DefaultActions:
         - Type: forward
@@ -49,7 +49,7 @@ Resources:
     Properties:
       Name: !Sub ${EnvironmentName}-Def-TG
       VpcId: !Ref VpcId
-      Port: 80
+      Port: 8080
       Protocol: HTTP
       Matcher:
         HttpCode: 200-299

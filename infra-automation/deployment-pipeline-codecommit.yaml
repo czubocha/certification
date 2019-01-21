@@ -31,7 +31,7 @@ Parameters:
   ECRRepositoryBaseName:
     Description: the base name for the ECR Repo for the 5 microservices
     Type: String
-    Default: spring-petclinic-rest
+    Default: spring-certification-rest
 
 Resources:
 
@@ -39,7 +39,7 @@ Resources:
   ECRRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: !Sub "${ECRRepositoryBaseName}-${MicroServiceName}"
+      RepositoryName: certification
     # DeletionPolicy: Retain
     DeletionPolicy: Delete
 
@@ -128,7 +128,7 @@ Resources:
                   - s3:PutObject
                   - s3:GetObjectVersion
               - Resource:
-                  - !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${ECRRepositoryBaseName}-${MicroServiceName}"
+                  - !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/certification"
                 Effect: Allow
                 Action:
                   - ecr:GetDownloadUrlForLayer
@@ -192,7 +192,7 @@ Resources:
   ### CodePipeline & Codebuild
   ArtifactBucket:
     Type: AWS::S3::Bucket
-      # Properties:
+    # Properties:
     #   BucketName: !Sub "${EnvironmentName}-${MicroServiceName}-codepipeline"
     # Tags:
     DeletionPolicy: Retain
@@ -231,11 +231,10 @@ Resources:
               - echo Build completed on `date`
               - echo $(docker images)
               - printf '{"tag":"%s"}' $TAG > build.json
-          #                - printf '{"Parameters":{"SsmKMSKeyArn":"%s","DBPasswordSSMKey":"%s","DBUsername":"%s","JDBCConnectionString":"%s"}}' $SsmKMSKeyArn ${DBPasswordSSMKey} ${DBUsername} ${JDBCConnectionString} > petclinic-service-configuration.json
           artifacts:
             files:
               - build.json
-      #              - petclinic-service-configuration.json
+      #              - certification-service-configuration.json
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL   #BUILD_GENERAL1_LARGE
         Image: !Ref CodeBuildContainerSpringBootDocker
@@ -249,7 +248,7 @@ Resources:
           - Name: AWS_DEFAULT_REGION
             Value: !Ref AWS::Region
           - Name: REPOSITORY_URI
-            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepositoryBaseName}-${MicroServiceName}
+            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/certification
       ServiceRole: !Ref CodeBuildServiceRole
 
   Pipeline:
@@ -291,7 +290,7 @@ Resources:
               RunOrder: 1
               Configuration:
                 S3Bucket: !Ref CfnTemplateBucket
-                S3ObjectKey: petclinic-service.zip
+                S3ObjectKey: certification-service.zip
                 PollForSourceChanges: false #if we update the ECS service template we dont trigger a whole new build/deploy
         - Name: Build
           Actions:
@@ -328,10 +327,10 @@ Resources:
               Configuration:
                 ChangeSetName: Deploy
                 ActionMode: CREATE_UPDATE
-                StackName: !Sub "${EnvironmentName}-PetClinic-${MicroServiceName}"
+                StackName: !Sub "${EnvironmentName}-certification-${MicroServiceName}"
                 Capabilities: CAPABILITY_NAMED_IAM
-                TemplatePath: CfnTemplate::petclinic-service.yaml
-                #                TemplateConfiguration: BuildOutput::petclinic-service-configuration.json
+                TemplatePath: CfnTemplate::certification-service.yaml
+                #                TemplateConfiguration: BuildOutput::certification-service-configuration.json
                 RoleArn: !GetAtt CloudFormationExecutionRole.Arn
                 ParameterOverrides: !Sub |
                   {
