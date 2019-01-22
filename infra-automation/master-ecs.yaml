@@ -68,3 +68,8 @@ Resources:
         ALBListener: !GetAtt ALB.Outputs.ALBListener
         ECSCluster: !GetAtt ECSCluster.Outputs.ECSCluster
         CfnTemplateBucket: !Ref InfraAutomationCfnBucket
+
+  Frontend:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://s3-${AWS::Region}.amazonaws.com/${InfraAutomationCfnBucket}/frontend.yaml
