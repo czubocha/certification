@@ -223,6 +223,7 @@ Resources:
             build:
               commands:
               - echo Build started on `date`
+              - update-ca-certificates -f
               - mvn package
               - docker push ${docker_registry_host}/certification:${TAG}
             post_build:
