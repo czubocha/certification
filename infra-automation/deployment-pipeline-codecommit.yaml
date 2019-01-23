@@ -224,7 +224,8 @@ Resources:
               commands:
               - echo Build started on `date`
               - update-ca-certificates -f
-              - mvn package
+              - curl https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-parent/2.1.2.RELEASE/spring-boot-starter-parent-2.1.2.RELEASE.pom
+              - mvn -s settings.xml clean package
               - docker push ${docker_registry_host}/certification:${TAG}
             post_build:
               commands:
